@@ -1,7 +1,6 @@
 package com.learning.SpringSecurity312.model;
 
 import jakarta.persistence.*;
-import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.List;
@@ -15,6 +14,9 @@ public class Role implements GrantedAuthority {
     @Column(name="name")
     private String name;
     @ManyToMany(mappedBy = "roles")
+    @JoinTable(name = "user_roles"
+            , joinColumns = @JoinColumn(name="role_id")
+            , inverseJoinColumns = @JoinColumn(name="user_id"))
     private List<User> users;
 
     public Long getId() {

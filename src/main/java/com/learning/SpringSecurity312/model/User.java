@@ -30,10 +30,12 @@ public class User implements UserDetails {
     @Min(value = 0, message = "Age should be greater than 0")
     private int age;
     @Column(name = "password")
-    @Size(min = 2, message="Password should be greater than 1")
+    @Size(min = 2, message = "Password should be greater than 1")
     private String password;
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name="users_role")
+    @JoinTable(name = "user_roles"
+    , joinColumns = @JoinColumn(name="user_id")
+    , inverseJoinColumns = @JoinColumn(name="role_id"))
     private List<Role> roles;
 
     public User(String username, String lastname, int age) {
