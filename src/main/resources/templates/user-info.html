@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User</title>
+</head>
+<body>
+<form th:action="@{/save}"
+      th:object="${user}" method="post">
+        <input type="hidden"
+               th:field="*{id}" />
+    <div><label> User Name : <input type="text" th:field="*{username}"/> </label></div>
+    <div style="color:red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Name error</div>
+    <div><label> Last Name: <input type="text" th:field="*{lastname}"/> </label></div>
+    <div style="color:red" th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}">Last Name error</div>
+    <div><label> Age: <input type="number" th:field="*{age}"/> </label></div>
+    <div style="color:red" th:if="${#fields.hasErrors('age')}" th:errors="*{age}">Age error</div>
+    <br>
+    <div><input type="submit" value="OK"/></div>
+</form>
+</body>
+</html>
