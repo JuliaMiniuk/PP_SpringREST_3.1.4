@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Home Page</title>
+</head>
+<body>
+<p th:text="${user.username}"></p>
+<p th:text="${user.lastname}"></p>
+<p th:text="${user.age}"></p>
+<form th:action="@{/logout}"
+method="post">
+    <button type="submit">Exit</button>
+</form>
+
+</body>
+</html>
