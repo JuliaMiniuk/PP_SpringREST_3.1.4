@@ -3,6 +3,7 @@ package com.learning.SpringSecurity312.service;
 import com.learning.SpringSecurity312.dao.RoleRepository;
 import com.learning.SpringSecurity312.dao.UserDao;
 import com.learning.SpringSecurity312.dao.UserRepository;
+import com.learning.SpringSecurity312.model.Role;
 import com.learning.SpringSecurity312.model.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,20 +38,30 @@ public class UserServiceImpl implements UserDetailsService {
 
     @Transactional(readOnly = true)
     public List<User> getAllUsers() {
-
         return userRepository.findAll();
     }
 
-    @Override
+
     @Transactional
-    public void saveUser(User user) {
-        userDao.saveUser(user);
+    public User saveUser(User user) {
+       if(userRepository.findByUsername(user.getUsername()).isPresent()) {
+           throw new IllegalArgumentException("User already exists: " + user.getUsername());
+       }
+       user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+       Role userRole = roleRepository.findByName("ROLE_USER")
+               .orElseThrow(() -> new RuntimeException("role not found"));
+       user.setRoles(new ArrayList<>(List.of(userRole)));
+       return userRepository.save(user);
     }
 
-    @Override
+
     @Transactional
-    public void deleteUser(int id) {
-        userDao.deleteUser(id);
+    public boolean deleteUser(Long id) {
+       if(userRepository.findById(id).isPresent()) {
+           userRepository.deleteById(id);
+           return true;
+       }
+       return false;
     }
 
 
@@ -61,10 +73,6 @@ public class UserServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found");
-        }
-        return user;
+        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 }
