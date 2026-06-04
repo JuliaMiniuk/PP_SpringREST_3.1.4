@@ -5,7 +5,7 @@
     <title>User</title>
 </head>
 <body>
-<form th:action="@{/save}"
+<form th:action="@{/admin/save}"
       th:object="${user}" method="post">
         <input type="hidden"
                th:field="*{id}" />
@@ -15,6 +15,9 @@
     <div style="color:red" th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}">Last Name error</div>
     <div><label> Age: <input type="number" th:field="*{age}"/> </label></div>
     <div style="color:red" th:if="${#fields.hasErrors('age')}" th:errors="*{age}">Age error</div>
+    <div><label> Password: <input type="password" th:field="*{password}"/>> </label></div>
+    <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password error</div>
+
     <br>
     <div><input type="submit" value="OK"/></div>
 </form>
