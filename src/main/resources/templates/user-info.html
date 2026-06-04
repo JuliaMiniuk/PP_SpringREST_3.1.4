@@ -5,21 +5,29 @@
     <title>User</title>
 </head>
 <body>
-<form th:action="@{/admin/save}"
-      th:object="${user}" method="post">
-        <input type="hidden"
-               th:field="*{id}" />
-    <div><label> User Name : <input type="text" th:field="*{username}"/> </label></div>
-    <div style="color:red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Name error</div>
-    <div><label> Last Name: <input type="text" th:field="*{lastname}"/> </label></div>
-    <div style="color:red" th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}">Last Name error</div>
-    <div><label> Age: <input type="number" th:field="*{age}"/> </label></div>
-    <div style="color:red" th:if="${#fields.hasErrors('age')}" th:errors="*{age}">Age error</div>
-    <div><label> Password: <input type="password" th:field="*{password}"/>> </label></div>
-    <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password error</div>
+    <form th:action="@{${user.id == null ? '/admin/save' : '/admin/edit/' + user.id}}"
+          method="post" th:object="${user}">
 
-    <br>
-    <div><input type="submit" value="OK"/></div>
-</form>
+        <input type="hidden" th:if="${user.id != null}" th:field="*{id}"/>
+
+        <div>
+            <label>Username: <input type="text" th:field="*{username}"/></label>
+            <div style="color:red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Name error</div>
+        </div>
+        <div>
+            <label>Lastname: <input type="text" th:field="*{lastname}"/></label>
+            <div style="color:red" th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}">Last Name error</div>
+        </div>
+        <div>
+            <label>Age: <input type="number" th:field="*{age}"/></label>
+            <div style="color:red" th:if="${#fields.hasErrors('age')}" th:errors="*{age}">Age error</div>
+        </div>
+        <div>
+            <label>Password: <input type="password" th:field="*{password}"/></label>
+            <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password error</div>
+        </div>
+        <br>
+        <input type="submit" th:value="${user.id == null ? 'Create' : 'Update'}"/>
+    </form>
 </body>
 </html>

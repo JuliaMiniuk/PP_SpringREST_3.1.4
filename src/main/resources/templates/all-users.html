@@ -8,21 +8,21 @@
 <div th:each="user : ${users}">
         <strong th:text="${user.username} + ' ' + ${user.lastname}"></strong>
         (Age: <span th:text="${user.age}"></span>)
-    <form th:action="@{/update}" method="get" style="display:inline;">
-        <input type="hidden"
-               name="id" th:value="${user.id}" />
+    <form th:action="@{/admin/edit/{id}(id=${user.id})}" method="get" style="display:inline;">
         <button type="submit"
-                class="add">update</button>
+                class="add">Update</button>
     </form>
-    <form th:action="@{/delete}" method="post" style="display:inline;">
-        <input type="hidden"
-               name="id" th:value="${user.id}" />
+    <form th:action="@{/admin/delete/{id}(id=${user.id})}" method="post" style="display:inline;">
         <button type="submit"
-                class="add">delete</button>
+                class="add">Delete</button>
     </form>
 </div>
 <br>
-<a th:href="@{/new}" class="add">addUser</a>
+<a th:href="@{/admin/new}" class="add">Add User</a>
 <br>
+<form th:action="@{/logout}"
+      method="post">
+    <button type="submit">Exit</button>
+</form>
 </body>
 </html>

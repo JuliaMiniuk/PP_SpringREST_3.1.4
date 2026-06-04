@@ -7,14 +7,12 @@ import com.learning.SpringSecurity312.model.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -81,11 +79,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public User getUser(Long id) {
         Optional<User> user = userRepository.findById(id);
-        return user.orElse(new User());
+        return user.orElseThrow(() -> new IllegalArgumentException("User not found with id: " + id));
     }
 
-//    @Override
-//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
-//    }
 }
