@@ -27,7 +27,15 @@
             <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password error</div>
         </div>
         <br>
+        <div th:each="role : ${roles}">
+            <input type="checkbox" name="roleIds" th:value="${role.id}"
+            th:checked="${user.roles.contains(role)}"/>
+            <label th:text="${role.name}"></label>
+        </div>
+        <br>
         <input type="submit" th:value="${user.id == null ? 'Create' : 'Update'}"/>
     </form>
+    <br>
+    <a th:href="@{/admin}" class="add">Back to users</a>
 </body>
 </html>

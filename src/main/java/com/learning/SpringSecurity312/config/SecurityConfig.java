@@ -25,7 +25,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationSuccessHandler successHandler) throws Exception {
                 http
-                        .csrf(csrf -> csrf.disable())
                         .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
@@ -41,6 +40,7 @@ public class SecurityConfig {
                         .permitAll());
         return http.build();
     }
+
 
 
 }

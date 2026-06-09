@@ -37,7 +37,6 @@ public class User implements UserDetails {
     private int age;
     @Column(name = "password")
     @Size(min = 2, message = "Password should be greater than 1")
-    @NotBlank
     private String password;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles"

@@ -13,6 +13,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
@@ -39,11 +41,13 @@ public class AdminController {
         return "user-info";
     }
     @PostMapping("/save")
-    public String saveUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
+    public String saveUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult,
+                           @RequestParam(value="roleIds", required = false) List<Long> roleIds, Model model) {
         if (bindingResult.hasErrors()) {
+            model.addAttribute("roles", roleService.getAllRoles());
             return "user-info";
         }
-        userService.saveUser(user);
+        userService.saveUser(user, roleIds);
         return "redirect:/admin";
     }
 
@@ -60,12 +64,13 @@ public class AdminController {
     }
 
     @PostMapping("/edit/{id}")
-    public String updateUser(@PathVariable Long id, @Valid @ModelAttribute("user") User user, BindingResult bindingResult, Model model) {
+    public String updateUser(@PathVariable Long id, @Valid @ModelAttribute("user") User user, BindingResult bindingResult, Model model,
+    @RequestParam(value="roleIds", required= false) List<Long> roleIds) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("user", user);
+            model.addAttribute("roles", roleService.getAllRoles());
             return "user-info";
         }
-        userService.updateUser(user, id);
+        userService.updateUser(user, id, roleIds);
         return "redirect:/admin";
     }
 
