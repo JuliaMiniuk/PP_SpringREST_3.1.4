@@ -28,24 +28,31 @@ public class AdminController {
         this.userService = userService;
         this.roleService = roleService;
     }
+
     @GetMapping
     public String getAllUsers(Model model) {
         model.addAttribute("users", userService.getAllUsers());
+        if(!model.containsAttribute("user")){
+            model.addAttribute("user", new User());
+        }
         model.addAttribute("roles", roleService.getAllRoles());
         return "all-users";
     }
-    @GetMapping("/new")
-    public String addUser(Model model) {
-        model.addAttribute("user", new User());
-        model.addAttribute("roles", roleService.getAllRoles());
-        return "user-info";
-    }
+
+//    @GetMapping("/new")
+//    public String addUser(Model model) {
+//        model.addAttribute("user", new User());
+//        model.addAttribute("roles", roleService.getAllRoles());
+//        return "user-info";
+//    }
+
     @PostMapping("/save")
     public String saveUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult,
-                           @RequestParam(value="roleIds", required = false) List<Long> roleIds, Model model) {
+                           @RequestParam(value = "roleIds", required = false) List<Long> roleIds, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("roles", roleService.getAllRoles());
-            return "user-info";
+            model.addAttribute("users", userService.getAllUsers());
+            return "all-users";
         }
         userService.saveUser(user, roleIds);
         return "redirect:/admin";
@@ -56,19 +63,21 @@ public class AdminController {
         userService.deleteUser(id);
         return "redirect:/admin";
     }
-    @GetMapping("/edit/{id}")
-    public String editUser(@PathVariable Long id, Model model) {
-        model.addAttribute("user", userService.getUser(id));
-        model.addAttribute("roles", roleService.getAllRoles());
-        return "user-info";
-    }
+
+//    @GetMapping("/edit/{id}")
+//    public String editUser(@PathVariable Long id, Model model) {
+//        model.addAttribute("user", userService.getUser(id));
+//        model.addAttribute("roles", roleService.getAllRoles());
+//        return "user-info";
+//    }
 
     @PostMapping("/edit/{id}")
     public String updateUser(@PathVariable Long id, @Valid @ModelAttribute("user") User user, BindingResult bindingResult, Model model,
-    @RequestParam(value="roleIds", required= false) List<Long> roleIds) {
+                             @RequestParam(value = "roleIds", required = false) List<Long> roleIds) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("roles", roleService.getAllRoles());
-            return "user-info";
+            model.addAttribute("users", userService.getAllUsers());
+            return "all-users";
         }
         userService.updateUser(user, id, roleIds);
         return "redirect:/admin";

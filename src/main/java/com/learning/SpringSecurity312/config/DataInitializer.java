@@ -29,7 +29,7 @@ public class DataInitializer {
                         role.setName("ROLE_USER");
                         return roleRepository.save(role);
                     });
-            if(userRepository.findByUsername("admin").isEmpty()) {
+            if (userRepository.findByUsername("admin").isEmpty()) {
                 User userAdmin = new User();
                 userAdmin.setUsername("admin");
                 userAdmin.setLastname("admin");
