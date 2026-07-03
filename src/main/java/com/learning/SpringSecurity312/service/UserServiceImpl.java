@@ -2,6 +2,7 @@ package com.learning.SpringSecurity312.service;
 
 import com.learning.SpringSecurity312.dao.RoleRepository;
 import com.learning.SpringSecurity312.dao.UserRepository;
+import com.learning.SpringSecurity312.exception_handling.NoSuchUserException;
 import com.learning.SpringSecurity312.model.Role;
 import com.learning.SpringSecurity312.model.User;
 import jakarta.persistence.EntityManager;
@@ -29,11 +30,11 @@ public class UserServiceImpl implements UserService {
     private final RoleService roleService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder bCryptPasswordEncoder, RoleService roleService, RoleService roleService1) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder bCryptPasswordEncoder, RoleService roleService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.roleService = roleService1;
+        this.roleService = roleService;
     }
 
     @Override
@@ -62,16 +63,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateUser(User user, Long id, List<Long> roleIds) {
+    public User updateUser(User user, Long id, List<Long> roleIds) {
         User oldUser = userRepository.findById(id).orElseThrow(() ->
-                new UsernameNotFoundException("User not found with id: " + id));
+                new NoSuchUserException("User not found with id: " + id));
         oldUser.setUsername(user.getUsername());
         oldUser.setLastname(user.getLastname());
         oldUser.setAge(user.getAge());
         if (user.getPassword() != null && !user.getPassword().isBlank()) {
             oldUser.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         }
-        if(roleIds != null || !roleIds.isEmpty()) {
+        if(roleIds != null && !roleIds.isEmpty()) {
             List<Role> roles = roleRepository.findAllById(roleIds);
             if (roles.size() != roleIds.size()) {
                 throw new IllegalArgumentException("Role Ids do not match");
@@ -79,25 +80,21 @@ public class UserServiceImpl implements UserService {
             oldUser.getRoles().clear();
             oldUser.getRoles().addAll(roles);
         }
-        userRepository.save(oldUser);
+        return userRepository.save(oldUser);
     }
-
 
     @Override
     @Transactional
-    public boolean deleteUser(Long id) {
-        if (userRepository.findById(id).isPresent()) {
-            userRepository.deleteById(id);
-            return true;
-        }
-        return false;
+    public void deleteUser(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() ->
+                new NoSuchUserException("User not found with id: " + id));
+        userRepository.delete(user);
     }
 
     @Override
     @Transactional(readOnly = true)
     public User getUser(Long id) {
         Optional<User> user = userRepository.findById(id);
-        return user.orElseThrow(() -> new IllegalArgumentException("User not found with id: " + id));
+        return user.orElseThrow(() -> new NoSuchUserException("User not found with id: " + id));
     }
-
 }
