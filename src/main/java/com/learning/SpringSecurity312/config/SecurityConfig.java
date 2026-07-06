@@ -24,10 +24,12 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationSuccessHandler successHandler) throws Exception {
-                http
-                        .authorizeHttpRequests(authorize -> authorize
+        http
+                .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/login", "/").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(form -> form
@@ -40,7 +42,6 @@ public class SecurityConfig {
                         .permitAll());
         return http.build();
     }
-
 
 
 }

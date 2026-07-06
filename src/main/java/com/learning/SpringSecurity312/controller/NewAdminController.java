@@ -56,6 +56,12 @@ public class NewAdminController {
         return ResponseEntity.ok(convertToUserDTO(user));
     }
 
+    @GetMapping("/users/{id}")
+    public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
+        User user = userService.getUser(id);
+        return ResponseEntity.ok(convertToUserDTO(user));
+    }
+
     private User convertToUser(CreateUserRequest createUserRequest) {
         return modelMapper.map(createUserRequest, User.class);
     }
